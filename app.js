@@ -241,14 +241,14 @@ async function fetchFromGetNote(category) {
     const query = category + '品类的市场洞察和关键信息';
 
     // 尝试不同的API端点，因为公测期可能变动
-    const apiEndpoint = 'https://api.biji.com/v1/knowledge/query';
+    const apiEndpoint = 'https://get-note-proxy.891646025.workers.dev';
 
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + GET_NOTE_API_KEY
+                'Content-Type': 'application/json'
+                // 注意：API Key 现在由 Cloudflare Worker 在后端添加，此处不再需要
             },
             body: JSON.stringify({
                 query: query,
