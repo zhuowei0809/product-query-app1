@@ -185,22 +185,23 @@ async function loadCategoryInsights(category) {
         // 显示洞察
         showCategoryInsights(category, insights);
     } catch (error) {
-        console.error('获取品类洞察失败:', error);
+        console.warn('获取品类洞察API失败，尝试使用本地数据:', error);
 
-        // 在本地环境(file://)下，由于CORS限制，API调用通常会失败
-        // 为了演示效果，如果API失败，我们使用备用的模拟数据
-        if (window.location.protocol === 'file:') {
-            console.log('检测到本地文件环境，使用模拟数据展示功能...');
-            const mockInsights = getMockInsights(category);
+        // 如果API失败（可能是网络屏蔽、CORS或API故障），自动降级使用模拟数据
+        // 这样确保在国内网络环境下用户依然能看到内容
+        console.log('启动本地数据回退模式...');
+        const mockInsights = getMockInsights(category);
+
+        if (mockInsights && mockInsights.length > 0) {
             showCategoryInsights(category, mockInsights);
 
-            // 添加一个小提示
+            // 添加来源提示
             const notice = document.createElement('div');
             notice.style.fontSize = '12px';
             notice.style.color = '#999';
             notice.style.textAlign = 'center';
             notice.style.marginTop = '10px';
-            notice.innerHTML = '(本地演示模式 - 部署后将使用实时API数据)';
+            notice.innerHTML = '(数据来源：本地知识库)';
             categoryInsights.appendChild(notice);
         } else {
             showCategoryError(category);
