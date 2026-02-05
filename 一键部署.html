@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="医药代表产品卖点查询工具，快速了解产品核心价值">
+    <title>产品卖点查询</title>
+    <style>
+        /* ========================================
+   产品卖点查询APP - 样式表
+   移动端优先设计
+======================================== */
+
+        :root {
+            /* 主题色彩 - 医药专业风格 */
+            --primary-color: #0066CC;
+            --primary-dark: #004C99;
+            --primary-light: #E6F0FA;
+            --secondary-color: #00B8A9;
+            --accent-color: #FF6B6B;
+
+            /* 中性色 */
+            --text-primary: #1A1A2E;
+            --text-secondary: #4A4A6A;
+            --text-muted: #8E8EA0;
+            --bg-main: #F5F7FA;
+            --bg-card: #FFFFFF;
+            --border-color: #E8ECF0;
+
+            /* 渐变 */
+            --gradient-primary: linear-gradient(135deg, #0066CC 0%, #00B8A9 100%);
+            --gradient-header: linear-gradient(180deg, #0066CC 0%, #004C99 100%);
+
+            /* 阴影 */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+            /* 圆角 */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+
+            /* 间距 */
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+        }
+
+        /* 重置和基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* APP容器 */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-main);
+        }
+
+        /* ========================================
+   头部样式
+======================================== */
+        .app-header {
+            position: relative;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            padding-bottom: var(--spacing-xl);
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: -30px;
+            background: var(--gradient-header);
+            border-radius: 0 0 30px 30px;
+            z-index: 0;
+        }
+
+        .header-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto var(--spacing-md);
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-icon svg {
+            width: 36px;
+            height: 36px;
+            color: white;
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+            font-weight: 400;
+        }
+
+        /* ========================================
+   主要内容区
+======================================== */
+        .main-content {
+            flex: 1;
+            padding: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+            margin-top: -20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 查询卡片 */
+        .query-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .label-icon {
+            font-size: 16px;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            padding-right: 40px;
+            font-size: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .select-wrapper select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+        }
+
+        .select-wrapper select:disabled {
+            background: var(--bg-main);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 10px;
+            pointer-events: none;
+        }
+
+        /* 查询按钮 */
+        .query-btn {
+            width: 100%;
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+            font-family: inherit;
+        }
+
+        .query-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .query-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .query-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-icon {
+            font-size: 18px;
+        }
+
+        /* ========================================
+   结果展示区
+======================================== */
+        .result-section {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .result-section.hidden {
+            display: none;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .result-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .result-badge {
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            background: var(--secondary-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .product-info {
+            background: var(--primary-light);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            font-size: 14px;
+            color: var(--primary-dark);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .product-info strong {
+            color: var(--primary-color);
+        }
+
+        /* 卖点列表 */
+        .selling-points {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .selling-points li {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            line-height: 1.5;
+            animation: fadeInLeft 0.3s ease-out;
+            animation-fill-mode: both;
+            border: 1px solid var(--border-color);
+        }
+
+        .selling-points li:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .selling-points li:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .selling-points li:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .selling-points li:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .selling-points li:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .point-number {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .point-text {
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            color: var(--text-muted);
+        }
+
+        .empty-state.hidden {
+            display: none;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-md);
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* ========================================
+   底部
+======================================== */
+        .app-footer {
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* ========================================
+   响应式调整
+======================================== */
+        @media (min-width: 481px) {
+            .app-container {
+                margin: 20px auto;
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow-lg);
+                min-height: calc(100vh - 40px);
+            }
+
+            .header-bg {
+                border-radius: var(--radius-lg) var(--radius-lg) 30px 30px;
+            }
+        }
+
+        /* 深色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-primary: #F0F0F5;
+                --text-secondary: #B0B0C0;
+                --text-muted: #707080;
+                --bg-main: #0D0D15;
+                --bg-card: #1A1A28;
+                --border-color: #2A2A3A;
+                --primary-light: rgba(0, 102, 204, 0.15);
+            }
+
+            .select-wrapper select {
+                background: var(--bg-card);
+                color: var(--text-primary);
+            }
+
+            .selling-points li {
+                background: linear-gradient(135deg, #1e1e2e 0%, #252535 100%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- 头部 -->
+        <header class="app-header">
+            <div class="header-bg"></div>
+            <div class="header-content">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" />
+                    </svg>
+                </div>
+                <h1>产品卖点查询</h1>
+                <p class="subtitle">医药代表专用 · KP沟通助手</p>
+            </div>
+        </header>
+
+        <!-- 查询表单 -->
+        <main class="main-content">
+            <div class="query-card">
+                <div class="form-group">
+                    <label for="manufacturer">
+                        <span class="label-icon">🏭</span>
+                        营销厂家
+                    </label>
+                    <div class="select-wrapper">
+                        <select id="manufacturer">
+                            <option value="">请选择营销厂家</option>
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="product">
+                        <span class="label-icon">💊</span>
+                        商品名称
+                    </label>
+                    <div class="select-wrapper">
+                        <select id="product" disabled>
+                            <option value="">请先选择营销厂家</option>
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
+
+                <button id="queryBtn" class="query-btn" disabled>
+                    <span class="btn-icon">🔍</span>
+                    查询卖点
+                </button>
+            </div>
+
+            <!-- 结果展示区 -->
+            <div id="resultSection" class="result-section hidden">
+                <div class="result-header">
+                    <h2 id="resultTitle">产品卖点</h2>
+                    <span class="result-badge" id="resultBadge">核心优势</span>
+                </div>
+                <div class="product-info" id="productInfo"></div>
+                <ul class="selling-points" id="sellingPoints"></ul>
+            </div>
+
+            <!-- 空状态提示 -->
+            <div id="emptyState" class="empty-state">
+                <div class="empty-icon">📋</div>
+                <p>选择厂家和商品后<br>点击查询查看产品卖点</p>
+            </div>
+        </main>
+
+        <!-- 底部 -->
+        <footer class="app-footer">
+            <p>© 2026 产品卖点查询系统</p>
+        </footer>
+    </div>
+
+    <script>
+        /**
+         * 产品卖点查询APP - 主逻辑
+         * 包含产品数据和查询功能
+         */
+
+        // ========================================
+        // 产品数据库
+        // ========================================
+        const productDatabase = {
+            "重庆药友": [
+                {
+                    name: "可乐必妥 左氧氟沙星片 0.5g*4片",
+                    sellingPoints: [
+                        "原研品质",
+                        "可乐必妥=阿莫西林+阿奇霉素",
+                        "在肺部和泌尿的组织浓度高，对呼吸和泌尿系统的感染有着良好的效果",
+                        "一天一片，服用更方便"
+                    ]
+                },
+                {
+                    name: "阿拓莫兰 谷胱甘肽片 36片",
+                    sellingPoints: [
+                        "独家产品，临床带动",
+                        "高客单",
+                        "告客户粘性，慢乙肝顾客长期复购"
+                    ]
+                }
+            ],
+            "达仁堂": [
+                {
+                    name: "达仁堂 速效救心丸 120丸",
+                    sellingPoints: [
+                        "速效救心丸突出速效和救心，直击患者对快速奇效、急救的迫切需求。即使非医疗专业人士也能从名称直观理解其主要功效和场景"
+                    ]
+                }
+            ]
+        };
+
+        // ========================================
+        // DOM 元素
+        // ========================================
+        const manufacturerSelect = document.getElementById('manufacturer');
+        const productSelect = document.getElementById('product');
+        const queryBtn = document.getElementById('queryBtn');
+        const resultSection = document.getElementById('resultSection');
+        const emptyState = document.getElementById('emptyState');
+        const productInfo = document.getElementById('productInfo');
+        const sellingPoints = document.getElementById('sellingPoints');
+        const resultTitle = document.getElementById('resultTitle');
+
+        // ========================================
+        // 初始化
+        // ========================================
+        function init() {
+            // 填充厂家选择框
+            populateManufacturers();
+
+            // 绑定事件
+            manufacturerSelect.addEventListener('change', onManufacturerChange);
+            productSelect.addEventListener('change', onProductChange);
+            queryBtn.addEventListener('click', onQuery);
+        }
+
+        // 填充厂家选项
+        function populateManufacturers() {
+            const manufacturers = Object.keys(productDatabase);
+
+            manufacturers.forEach(manufacturer => {
+                const option = document.createElement('option');
+                option.value = manufacturer;
+                option.textContent = manufacturer;
+                manufacturerSelect.appendChild(option);
+            });
+        }
+
+        // ========================================
+        // 事件处理
+        // ========================================
+
+        // 厂家选择变化
+        function onManufacturerChange() {
+            const selectedManufacturer = manufacturerSelect.value;
+
+            // 清空商品选择
+            productSelect.innerHTML = '<option value="">请选择商品</option>';
+
+            if (selectedManufacturer) {
+                // 启用商品选择
+                productSelect.disabled = false;
+
+                // 填充该厂家的商品
+                const products = productDatabase[selectedManufacturer];
+                products.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product.name;
+                    option.textContent = product.name;
+                    productSelect.appendChild(option);
+                });
+            } else {
+                productSelect.disabled = true;
+                productSelect.innerHTML = '<option value="">请先选择营销厂家</option>';
+            }
+
+            // 重置查询按钮和结果
+            queryBtn.disabled = true;
+            hideResult();
+        }
+
+        // 商品选择变化
+        function onProductChange() {
+            const selectedProduct = productSelect.value;
+            queryBtn.disabled = !selectedProduct;
+
+            // 隐藏之前的结果
+            if (selectedProduct) {
+                hideResult();
+            }
+        }
+
+        // 查询按钮点击
+        function onQuery() {
+            const selectedManufacturer = manufacturerSelect.value;
+            const selectedProductName = productSelect.value;
+
+            if (!selectedManufacturer || !selectedProductName) {
+                return;
+            }
+
+            // 查找产品
+            const products = productDatabase[selectedManufacturer];
+            const product = products.find(p => p.name === selectedProductName);
+
+            if (product) {
+                showResult(selectedManufacturer, product);
+            }
+        }
+
+        // ========================================
+        // 结果展示
+        // ========================================
+
+        function showResult(manufacturer, product) {
+            // 隐藏空状态
+            emptyState.classList.add('hidden');
+
+            // 更新产品信息
+            productInfo.innerHTML = `
+        <strong>${manufacturer}</strong> · ${product.name}
+    `;
+
+            // 清空并填充卖点
+            sellingPoints.innerHTML = '';
+            product.sellingPoints.forEach((point, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+            <span class="point-number">${index + 1}</span>
+            <span class="point-text">${point}</span>
+        `;
+                sellingPoints.appendChild(li);
+            });
+
+            // 显示结果区域
+            resultSection.classList.remove('hidden');
+
+            // 滚动到结果区域
+            setTimeout(() => {
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        function hideResult() {
+            resultSection.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+        }
+
+        // ========================================
+        // 启动应用
+        // ========================================
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>
